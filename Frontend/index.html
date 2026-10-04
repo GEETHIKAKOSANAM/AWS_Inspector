@@ -1,0 +1,908 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Amazon Inspector - Vulnerability Scanner
+    </title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+
+        body {
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+
+        header {
+            background: #172554;
+            color: white;
+            padding: 22px 40px;
+        }
+
+
+        header h1 {
+            font-size: 26px;
+        }
+
+
+        header p {
+            margin-top: 6px;
+            color: #cbd5e1;
+        }
+
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow:
+                0 3px 12px rgba(0,0,0,0.08);
+        }
+
+
+        .card h3 {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 12px;
+        }
+
+
+        .card .number {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+
+        .critical {
+            border-left: 6px solid #dc2626;
+        }
+
+
+        .high {
+            border-left: 6px solid #ea580c;
+        }
+
+
+        .medium {
+            border-left: 6px solid #ca8a04;
+        }
+
+
+        .low {
+            border-left: 6px solid #16a34a;
+        }
+
+
+        .scan-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+
+        .scan-box {
+            background: white;
+            padding: 28px;
+            border-radius: 12px;
+            box-shadow:
+                0 3px 12px rgba(0,0,0,0.08);
+        }
+
+
+        .scan-box h2 {
+            margin-bottom: 10px;
+        }
+
+
+        .scan-box p {
+            color: #64748b;
+            margin-bottom: 20px;
+        }
+
+
+        button {
+            border: none;
+            padding: 12px 22px;
+            border-radius: 7px;
+            background: #2563eb;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+
+        button:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+
+        .results {
+            margin-top: 30px;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow:
+                0 3px 12px rgba(0,0,0,0.08);
+            overflow-x: auto;
+        }
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+
+        th {
+            background: #f8fafc;
+        }
+
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+
+        .badge-critical {
+            background: #dc2626;
+        }
+
+
+        .badge-high {
+            background: #ea580c;
+        }
+
+
+        .badge-medium {
+            background: #ca8a04;
+        }
+
+
+        .badge-low {
+            background: #16a34a;
+        }
+
+
+        #status {
+            margin-top: 15px;
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+
+        .scan-info {
+            margin-top: 10px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+
+        .finding-description {
+            max-width: 350px;
+            line-height: 1.4;
+        }
+
+
+        @media(max-width: 800px) {
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+
+        @media(max-width: 500px) {
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <h1>
+        Amazon Inspector Vulnerability Scanner
+    </h1>
+
+    <p>
+        EC2, ECR, Dependency, Security & Container Assessment
+    </p>
+
+</header>
+
+
+<div class="container">
+
+
+    <!-- =========================
+         SUMMARY CARDS
+    ========================== -->
+
+    <div class="cards">
+
+
+        <div class="card critical">
+
+            <h3>
+                CRITICAL
+            </h3>
+
+            <div
+                class="number"
+                id="critical"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="card high">
+
+            <h3>
+                HIGH
+            </h3>
+
+            <div
+                class="number"
+                id="high"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="card medium">
+
+            <h3>
+                MEDIUM
+            </h3>
+
+            <div
+                class="number"
+                id="medium"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="card low">
+
+            <h3>
+                LOW
+            </h3>
+
+            <div
+                class="number"
+                id="low"
+            >
+                0
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =========================
+         SCAN SECTION
+    ========================== -->
+
+    <div class="scan-section">
+
+
+        <div class="scan-box">
+
+            <h2>
+                Complete Project Security Scan
+            </h2>
+
+
+            <p>
+                Analyze the project for dependency,
+                project configuration, security,
+                secrets, Docker and Kubernetes issues.
+            </p>
+
+
+            <button
+                id="scanButton"
+                onclick="scanProject()"
+            >
+                Scan Project
+            </button>
+
+
+            <div class="scan-info">
+
+                Target:
+
+                <strong>
+                    C:\AWS_Inspector\TestTarget
+                </strong>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =========================
+         STATUS
+    ========================== -->
+
+    <div id="status">
+        Ready to scan.
+    </div>
+
+
+    <!-- =========================
+         RESULTS
+    ========================== -->
+
+    <div class="results">
+
+
+        <h2>
+            Vulnerability Findings
+        </h2>
+
+
+        <table>
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Type / CVE
+                    </th>
+
+                    <th>
+                        Package / Component
+                    </th>
+
+                    <th>
+                        Version
+                    </th>
+
+                    <th>
+                        Severity
+                    </th>
+
+                    <th>
+                        Details
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="findings">
+
+
+                <tr>
+
+                    <td colspan="5">
+
+                        Run a scan to display findings.
+
+                    </td>
+
+                </tr>
+
+
+            </tbody>
+
+
+        </table>
+
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+/* ============================================================
+   Backend Configuration
+============================================================ */
+
+
+const API =
+    "http://127.0.0.1:5000";
+
+
+const TARGET =
+    "C:\\AWS_Inspector\\TestTarget";
+
+
+
+/* ============================================================
+   Scan Project
+============================================================ */
+
+
+async function scanProject() {
+
+
+    const status =
+        document.getElementById("status");
+
+
+    const button =
+        document.getElementById("scanButton");
+
+
+    status.innerText =
+        "Scanning project...";
+
+
+    button.disabled =
+        true;
+
+
+    button.innerText =
+        "Scanning...";
+
+
+    try {
+
+
+        const response =
+            await fetch(
+
+                `${API}/api/scan`,
+
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            target:
+                                TARGET
+
+                        })
+
+                }
+
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok ||
+            !data.success) {
+
+
+            throw new Error(
+
+                data.error ||
+                "Project scan failed."
+
+            );
+
+        }
+
+
+        /* Update severity cards */
+
+        updateSummary(
+            data.summary
+        );
+
+
+        /* Display findings */
+
+        displayFindings(
+            data.findings
+        );
+
+
+        /* Update status */
+
+        status.innerText =
+            `Scan completed successfully. ${data.total_findings} findings detected.`;
+
+
+    }
+
+
+    catch (error) {
+
+
+        console.error(
+            "Scan error:",
+            error
+        );
+
+
+        status.innerText =
+            "Scan failed: " +
+            error.message;
+
+
+        const table =
+            document.getElementById(
+                "findings"
+            );
+
+
+        table.innerHTML = `
+
+            <tr>
+
+                <td colspan="5">
+
+                    Unable to complete the scan.
+
+                    <br><br>
+
+                    Make sure Flask is running on
+
+                    <strong>
+                        http://127.0.0.1:5000
+                    </strong>
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+
+    finally {
+
+
+        button.disabled =
+            false;
+
+
+        button.innerText =
+            "Scan Project";
+
+    }
+
+}
+
+
+
+/* ============================================================
+   Update Summary Cards
+============================================================ */
+
+
+function updateSummary(summary) {
+
+
+    document.getElementById(
+        "critical"
+    ).innerText =
+        summary.CRITICAL || 0;
+
+
+    document.getElementById(
+        "high"
+    ).innerText =
+        summary.HIGH || 0;
+
+
+    document.getElementById(
+        "medium"
+    ).innerText =
+        summary.MEDIUM || 0;
+
+
+    document.getElementById(
+        "low"
+    ).innerText =
+        summary.LOW || 0;
+
+}
+
+
+
+/* ============================================================
+   Display Findings
+============================================================ */
+
+
+function displayFindings(findings) {
+
+
+    const table =
+        document.getElementById(
+            "findings"
+        );
+
+
+    table.innerHTML = "";
+
+
+    if (!findings ||
+        findings.length === 0) {
+
+
+        table.innerHTML = `
+
+            <tr>
+
+                <td colspan="5">
+
+                    No security findings detected.
+
+                </td>
+
+            </tr>
+
+        `;
+
+
+        return;
+
+    }
+
+
+
+    findings.forEach(
+        finding => {
+
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            const severity =
+                (
+                    finding.severity ||
+                    "LOW"
+                ).toUpperCase();
+
+
+
+            /* Type */
+
+            const type =
+                finding.id ||
+                finding.type ||
+                "Finding";
+
+
+
+            /* Package / component */
+
+            const component =
+                finding.package ||
+                finding.secret_type ||
+                finding.ecosystem ||
+                "-";
+
+
+
+            /* Version */
+
+            const version =
+                finding.installed_version ||
+                finding.declared_version ||
+                finding.version ||
+                "-";
+
+
+
+            /* Details */
+
+            const details =
+                finding.description ||
+                finding.message ||
+                finding.recommendation ||
+                "-";
+
+
+
+            row.innerHTML = `
+
+                <td>
+
+                    <strong>
+                        ${escapeHtml(type)}
+                    </strong>
+
+                </td>
+
+
+                <td>
+
+                    ${escapeHtml(component)}
+
+                </td>
+
+
+                <td>
+
+                    ${escapeHtml(version)}
+
+                </td>
+
+
+                <td>
+
+                    <span
+                        class="badge badge-${severity.toLowerCase()}"
+                    >
+
+                        ${escapeHtml(severity)}
+
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    <div
+                        class="finding-description"
+                    >
+
+                        ${escapeHtml(details)}
+
+                    </div>
+
+                </td>
+
+            `;
+
+
+            table.appendChild(
+                row
+            );
+
+        }
+    );
+
+}
+
+
+
+/* ============================================================
+   HTML Safety
+============================================================ */
+
+
+function escapeHtml(value) {
+
+
+    if (value === null ||
+        value === undefined) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
