@@ -1,9 +1,7 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta
@@ -11,10 +9,7 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>
-        Amazon Inspector - Vulnerability Scanner
-    </title>
-
+    <title>Amazon Inspector - Vulnerability Scanner</title>
 
     <style>
 
@@ -25,12 +20,10 @@
             font-family: Arial, sans-serif;
         }
 
-
         body {
             background: #f4f7fb;
             color: #1f2937;
         }
-
 
         header {
             background: #172554;
@@ -38,24 +31,20 @@
             padding: 22px 40px;
         }
 
-
         header h1 {
             font-size: 26px;
         }
-
 
         header p {
             margin-top: 6px;
             color: #cbd5e1;
         }
 
-
         .container {
             max-width: 1200px;
             margin: 30px auto;
             padding: 0 20px;
         }
-
 
         .cards {
             display: grid;
@@ -64,15 +53,12 @@
             margin-bottom: 30px;
         }
 
-
         .card {
             background: white;
             padding: 22px;
             border-radius: 12px;
-            box-shadow:
-                0 3px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
         }
-
 
         .card h3 {
             font-size: 14px;
@@ -80,32 +66,26 @@
             margin-bottom: 12px;
         }
 
-
         .card .number {
             font-size: 32px;
             font-weight: bold;
         }
 
-
         .critical {
             border-left: 6px solid #dc2626;
         }
-
 
         .high {
             border-left: 6px solid #ea580c;
         }
 
-
         .medium {
             border-left: 6px solid #ca8a04;
         }
 
-
         .low {
             border-left: 6px solid #16a34a;
         }
-
 
         .scan-section {
             display: grid;
@@ -113,26 +93,44 @@
             gap: 25px;
         }
 
-
         .scan-box {
             background: white;
             padding: 28px;
             border-radius: 12px;
-            box-shadow:
-                0 3px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
         }
-
 
         .scan-box h2 {
             margin-bottom: 10px;
         }
-
 
         .scan-box p {
             color: #64748b;
             margin-bottom: 20px;
         }
 
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            background: #f8fafc;
+            margin-bottom: 20px;
+        }
+
+        .upload-area p {
+            margin-bottom: 10px;
+            color: #475569;
+        }
+
+        #fileInput {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            background: white;
+            cursor: pointer;
+        }
 
         button {
             border: none;
@@ -144,28 +142,41 @@
             cursor: pointer;
         }
 
-
         button:hover {
             background: #1d4ed8;
         }
-
 
         button:disabled {
             background: #94a3b8;
             cursor: not-allowed;
         }
 
+        .scan-info {
+            margin-top: 15px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .selected-file {
+            margin-top: 12px;
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+        #status {
+            margin-top: 15px;
+            color: #2563eb;
+            font-weight: bold;
+        }
 
         .results {
             margin-top: 30px;
             background: white;
             padding: 25px;
             border-radius: 12px;
-            box-shadow:
-                0 3px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
             overflow-x: auto;
         }
-
 
         table {
             width: 100%;
@@ -173,19 +184,17 @@
             margin-top: 20px;
         }
 
-
         th,
         td {
             padding: 12px;
             text-align: left;
             border-bottom: 1px solid #e5e7eb;
+            vertical-align: top;
         }
-
 
         th {
             background: #f8fafc;
         }
-
 
         .badge {
             padding: 5px 10px;
@@ -196,46 +205,36 @@
             display: inline-block;
         }
 
-
         .badge-critical {
             background: #dc2626;
         }
-
 
         .badge-high {
             background: #ea580c;
         }
 
-
         .badge-medium {
             background: #ca8a04;
         }
-
 
         .badge-low {
             background: #16a34a;
         }
 
-
-        #status {
-            margin-top: 15px;
-            color: #2563eb;
-            font-weight: bold;
+        .badge-info {
+            background: #64748b;
         }
-
-
-        .scan-info {
-            margin-top: 10px;
-            color: #64748b;
-            font-size: 14px;
-        }
-
 
         .finding-description {
             max-width: 350px;
             line-height: 1.4;
         }
 
+        .empty-message {
+            text-align: center;
+            color: #64748b;
+            padding: 25px;
+        }
 
         @media(max-width: 800px) {
 
@@ -245,11 +244,18 @@
 
         }
 
-
         @media(max-width: 500px) {
 
             .cards {
                 grid-template-columns: 1fr;
+            }
+
+            header {
+                padding: 20px;
+            }
+
+            .container {
+                padding: 0 12px;
             }
 
         }
@@ -260,7 +266,6 @@
 
 
 <body>
-
 
 <header>
 
@@ -278,12 +283,11 @@
 <div class="container">
 
 
-    <!-- =========================
+    <!-- =====================================================
          SUMMARY CARDS
-    ========================== -->
+    ====================================================== -->
 
     <div class="cards">
-
 
         <div class="card critical">
 
@@ -348,70 +352,94 @@
 
         </div>
 
-
     </div>
 
 
-    <!-- =========================
+    <!-- =====================================================
          SCAN SECTION
-    ========================== -->
+    ====================================================== -->
 
     <div class="scan-section">
-
 
         <div class="scan-box">
 
             <h2>
-                Complete Project Security Scan
+                Security Scan
             </h2>
 
-
             <p>
-                Analyze the project for dependency,
-                project configuration, security,
-                secrets, Docker and Kubernetes issues.
+                Upload a single file or a complete ZIP project
+                for vulnerability analysis.
             </p>
+
+
+            <div class="upload-area">
+
+                <p>
+                    Select a file or ZIP project
+                </p>
+
+                <input
+                    type="file"
+                    id="fileInput"
+                    accept=".zip,.txt,.py,.js,.json,.yaml,.yml,.tf,.toml,.xml,.dockerfile,.md,.java,.properties,.cfg,.ini,.env"
+                >
+
+                <div
+                    class="selected-file"
+                    id="selectedFile"
+                >
+                    No file selected.
+                </div>
+
+            </div>
 
 
             <button
                 id="scanButton"
-                onclick="scanProject()"
+                onclick="uploadAndScan()"
             >
-                Scan Project
+                Scan File / Project
             </button>
 
 
             <div class="scan-info">
 
-                Target:
+                Supported:
 
                 <strong>
-                    C:\AWS_Inspector\TestTarget
+                    Single files or ZIP projects
+                </strong>
+
+                <br>
+
+                Maximum upload size:
+
+                <strong>
+                    50 MB
                 </strong>
 
             </div>
 
         </div>
 
-
     </div>
 
 
-    <!-- =========================
+    <!-- =====================================================
          STATUS
-    ========================== -->
+    ====================================================== -->
 
     <div id="status">
         Ready to scan.
     </div>
 
 
-    <!-- =========================
+    <!-- =====================================================
          RESULTS
-    ========================== -->
+    ====================================================== -->
 
     <div class="results">
-
 
         <h2>
             Vulnerability Findings
@@ -419,7 +447,6 @@
 
 
         <table>
-
 
             <thead>
 
@@ -452,162 +479,259 @@
 
             <tbody id="findings">
 
-
                 <tr>
 
-                    <td colspan="5">
-
+                    <td
+                        colspan="5"
+                        class="empty-message"
+                    >
                         Run a scan to display findings.
-
                     </td>
 
                 </tr>
 
-
             </tbody>
-
 
         </table>
 
-
     </div>
-
 
 </div>
 
 
-
 <script>
 
+    /* ============================================================
+       Backend Configuration
+    ============================================================ */
 
-/* ============================================================
-   Backend Configuration
-============================================================ */
-
-
-const API =
-    "http://127.0.0.1:5000";
+    const API =
+        "http://127.0.0.1:5000";
 
 
-const TARGET =
-    "C:\\AWS_Inspector\\TestTarget";
+    /* ============================================================
+       Display Selected File
+    ============================================================ */
 
+    document
+        .getElementById("fileInput")
+        .addEventListener(
+            "change",
+            function () {
 
+                const file =
+                    this.files[0];
 
-/* ============================================================
-   Scan Project
-============================================================ */
+                const selected =
+                    document.getElementById(
+                        "selectedFile"
+                    );
 
+                if (file) {
 
-async function scanProject() {
+                    selected.innerText =
+                        "Selected: " +
+                        file.name;
 
+                } else {
 
-    const status =
-        document.getElementById("status");
-
-
-    const button =
-        document.getElementById("scanButton");
-
-
-    status.innerText =
-        "Scanning project...";
-
-
-    button.disabled =
-        true;
-
-
-    button.innerText =
-        "Scanning...";
-
-
-    try {
-
-
-        const response =
-            await fetch(
-
-                `${API}/api/scan`,
-
-                {
-
-                    method: "POST",
-
-                    headers: {
-
-                        "Content-Type":
-                            "application/json"
-
-                    },
-
-                    body:
-                        JSON.stringify({
-
-                            target:
-                                TARGET
-
-                        })
+                    selected.innerText =
+                        "No file selected.";
 
                 }
 
+            }
+        );
+
+
+    /* ============================================================
+       Upload And Scan
+    ============================================================ */
+
+    async function uploadAndScan() {
+
+        const fileInput =
+            document.getElementById(
+                "fileInput"
+            );
+
+        const button =
+            document.getElementById(
+                "scanButton"
+            );
+
+        const status =
+            document.getElementById(
+                "status"
+            );
+
+        const file =
+            fileInput.files[0];
+
+
+        if (!file) {
+
+            status.innerText =
+                "Please select a file or ZIP project.";
+
+            return;
+        }
+
+
+        button.disabled = true;
+
+        button.innerText =
+            "Scanning...";
+
+        status.innerText =
+            "Uploading and scanning...";
+
+
+        try {
+
+            const formData =
+                new FormData();
+
+
+            formData.append(
+                "file",
+                file
             );
 
 
-        const data =
-            await response.json();
+            const response =
+                await fetch(
+                    `${API}/api/upload-scan`,
+                    {
+                        method: "POST",
+                        body: formData
+                    }
+                );
 
 
-        if (!response.ok ||
-            !data.success) {
+            const data =
+                await response.json();
 
 
-            throw new Error(
+            if (!response.ok ||
+                !data.success) {
 
-                data.error ||
-                "Project scan failed."
+                throw new Error(
+                    data.error ||
+                    "Scan failed."
+                );
 
+            }
+
+
+            /* Update summary */
+
+            updateSummary(
+                data.summary
             );
+
+
+            /* Display findings */
+
+            displayFindings(
+                data.findings
+            );
+
+
+            /* Update status */
+
+            status.innerText =
+                `Scan completed successfully. ` +
+                `${data.total_findings} findings detected.`;
+
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Scan error:",
+                error
+            );
+
+
+            status.innerText =
+                "Scan failed: " +
+                error.message;
+
+
+            document.getElementById(
+                "findings"
+            ).innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="5"
+                        class="empty-message"
+                    >
+                        ${escapeHtml(
+                            error.message
+                        )}
+                    </td>
+
+                </tr>
+
+            `;
 
         }
 
 
-        /* Update severity cards */
+        finally {
 
-        updateSummary(
-            data.summary
-        );
+            button.disabled =
+                false;
 
+            button.innerText =
+                "Scan File / Project";
 
-        /* Display findings */
-
-        displayFindings(
-            data.findings
-        );
-
-
-        /* Update status */
-
-        status.innerText =
-            `Scan completed successfully. ${data.total_findings} findings detected.`;
-
+        }
 
     }
 
 
-    catch (error) {
+    /* ============================================================
+       Update Summary Cards
+    ============================================================ */
+
+    function updateSummary(summary) {
+
+        document.getElementById(
+            "critical"
+        ).innerText =
+            summary.CRITICAL || 0;
 
 
-        console.error(
-            "Scan error:",
-            error
-        );
+        document.getElementById(
+            "high"
+        ).innerText =
+            summary.HIGH || 0;
 
 
-        status.innerText =
-            "Scan failed: " +
-            error.message;
+        document.getElementById(
+            "medium"
+        ).innerText =
+            summary.MEDIUM || 0;
 
+
+        document.getElementById(
+            "low"
+        ).innerText =
+            summary.LOW || 0;
+
+    }
+
+
+    /* ============================================================
+       Display Findings
+    ============================================================ */
+
+    function displayFindings(findings) {
 
         const table =
             document.getElementById(
@@ -615,290 +739,208 @@ async function scanProject() {
             );
 
 
-        table.innerHTML = `
+        table.innerHTML = "";
 
-            <tr>
 
-                <td colspan="5">
+        if (!findings ||
+            findings.length === 0) {
 
-                    Unable to complete the scan.
+            table.innerHTML = `
 
-                    <br><br>
+                <tr>
 
-                    Make sure Flask is running on
-
-                    <strong>
-                        http://127.0.0.1:5000
-                    </strong>
-
-                </td>
-
-            </tr>
-
-        `;
-
-    }
-
-
-    finally {
-
-
-        button.disabled =
-            false;
-
-
-        button.innerText =
-            "Scan Project";
-
-    }
-
-}
-
-
-
-/* ============================================================
-   Update Summary Cards
-============================================================ */
-
-
-function updateSummary(summary) {
-
-
-    document.getElementById(
-        "critical"
-    ).innerText =
-        summary.CRITICAL || 0;
-
-
-    document.getElementById(
-        "high"
-    ).innerText =
-        summary.HIGH || 0;
-
-
-    document.getElementById(
-        "medium"
-    ).innerText =
-        summary.MEDIUM || 0;
-
-
-    document.getElementById(
-        "low"
-    ).innerText =
-        summary.LOW || 0;
-
-}
-
-
-
-/* ============================================================
-   Display Findings
-============================================================ */
-
-
-function displayFindings(findings) {
-
-
-    const table =
-        document.getElementById(
-            "findings"
-        );
-
-
-    table.innerHTML = "";
-
-
-    if (!findings ||
-        findings.length === 0) {
-
-
-        table.innerHTML = `
-
-            <tr>
-
-                <td colspan="5">
-
-                    No security findings detected.
-
-                </td>
-
-            </tr>
-
-        `;
-
-
-        return;
-
-    }
-
-
-
-    findings.forEach(
-        finding => {
-
-
-            const row =
-                document.createElement(
-                    "tr"
-                );
-
-
-            const severity =
-                (
-                    finding.severity ||
-                    "LOW"
-                ).toUpperCase();
-
-
-
-            /* Type */
-
-            const type =
-                finding.id ||
-                finding.type ||
-                "Finding";
-
-
-
-            /* Package / component */
-
-            const component =
-                finding.package ||
-                finding.secret_type ||
-                finding.ecosystem ||
-                "-";
-
-
-
-            /* Version */
-
-            const version =
-                finding.installed_version ||
-                finding.declared_version ||
-                finding.version ||
-                "-";
-
-
-
-            /* Details */
-
-            const details =
-                finding.description ||
-                finding.message ||
-                finding.recommendation ||
-                "-";
-
-
-
-            row.innerHTML = `
-
-                <td>
-
-                    <strong>
-                        ${escapeHtml(type)}
-                    </strong>
-
-                </td>
-
-
-                <td>
-
-                    ${escapeHtml(component)}
-
-                </td>
-
-
-                <td>
-
-                    ${escapeHtml(version)}
-
-                </td>
-
-
-                <td>
-
-                    <span
-                        class="badge badge-${severity.toLowerCase()}"
+                    <td
+                        colspan="5"
+                        class="empty-message"
                     >
+                        No security findings detected.
+                    </td>
 
-                        ${escapeHtml(severity)}
-
-                    </span>
-
-                </td>
-
-
-                <td>
-
-                    <div
-                        class="finding-description"
-                    >
-
-                        ${escapeHtml(details)}
-
-                    </div>
-
-                </td>
+                </tr>
 
             `;
 
-
-            table.appendChild(
-                row
-            );
-
+            return;
         }
-    );
-
-}
 
 
+        findings.forEach(
+            finding => {
 
-/* ============================================================
-   HTML Safety
-============================================================ */
+                const row =
+                    document.createElement(
+                        "tr"
+                    );
 
 
-function escapeHtml(value) {
+                const severity =
+                    (
+                        finding.severity ||
+                        "LOW"
+                    ).toUpperCase();
 
 
-    if (value === null ||
-        value === undefined) {
+                const type =
+                    finding.id ||
+                    finding.type ||
+                    "Finding";
 
-        return "";
+
+                const component =
+                    finding.package ||
+                    finding.secret_type ||
+                    finding.ecosystem ||
+                    finding.component ||
+                    "-";
+
+
+                const version =
+                    finding.installed_version ||
+                    finding.declared_version ||
+                    finding.version ||
+                    "-";
+
+
+                const details =
+                    finding.description ||
+                    finding.message ||
+                    finding.recommendation ||
+                    "-";
+
+
+                let badgeClass =
+                    "badge-low";
+
+
+                if (severity === "CRITICAL") {
+
+                    badgeClass =
+                        "badge-critical";
+
+                }
+                else if (severity === "HIGH") {
+
+                    badgeClass =
+                        "badge-high";
+
+                }
+                else if (severity === "MEDIUM") {
+
+                    badgeClass =
+                        "badge-medium";
+
+                }
+                else if (severity === "INFO") {
+
+                    badgeClass =
+                        "badge-info";
+
+                }
+
+
+                row.innerHTML = `
+
+                    <td>
+
+                        <strong>
+                            ${escapeHtml(type)}
+                        </strong>
+
+                    </td>
+
+
+                    <td>
+
+                        ${escapeHtml(component)}
+
+                    </td>
+
+
+                    <td>
+
+                        ${escapeHtml(version)}
+
+                    </td>
+
+
+                    <td>
+
+                        <span
+                            class="badge ${badgeClass}"
+                        >
+                            ${escapeHtml(severity)}
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <div
+                            class="finding-description"
+                        >
+                            ${escapeHtml(details)}
+                        </div>
+
+                    </td>
+
+                `;
+
+
+                table.appendChild(
+                    row
+                );
+
+            }
+        );
 
     }
 
 
-    return String(value)
+    /* ============================================================
+       HTML Safety
+    ============================================================ */
 
-        .replace(
-            /&/g,
-            "&amp;"
-        )
+    function escapeHtml(value) {
 
-        .replace(
-            /</g,
-            "&lt;"
-        )
+        if (
+            value === null ||
+            value === undefined
+        ) {
 
-        .replace(
-            />/g,
-            "&gt;"
-        )
+            return "";
 
-        .replace(
-            /"/g,
-            "&quot;"
-        )
+        }
 
-        .replace(
-            /'/g,
-            "&#039;"
-        );
 
-}
+        return String(value)
 
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+
+            .replace(
+                /</g,
+                "&lt;"
+            )
+
+            .replace(
+                />/g,
+                "&gt;"
+            )
+
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+    }
 
 </script>
 
